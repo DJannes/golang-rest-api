@@ -6,17 +6,22 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
+	"gitlab.com/janneseffendi/rest-api/depedency"
 	"gitlab.com/janneseffendi/rest-api/internal/dto"
 	"gitlab.com/janneseffendi/rest-api/internal/service"
 )
 
 type PublicController struct {
 	publicService *service.PublicService
+
+	validator *validator.Validate
 }
 
 func NewPublicController() *PublicController {
 	return &PublicController{
 		publicService: service.NewPublicService(),
+		validator:     depedency.GetValidator(),
 	}
 }
 
@@ -58,6 +63,12 @@ func (c *PublicController) SavePublicData(w http.ResponseWriter, r *http.Request
 	if err := json.Unmarshal(reqJson, &req); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Error unmarshaling request"))
+		return
+	}
+
+	if err := c.validator.Struct(req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error bad request" + err.Error()))
 		return
 	}
 
