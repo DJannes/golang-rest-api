@@ -21,7 +21,7 @@ func main() {
 	)
 
 	r.Route("/api/v1", func(r chi.Router) {
-		// controller.AddPublicRouter(r)
+		controller.AddPublicRouter(r)
 		controller.AddAuthRouter(r)
 	})
 

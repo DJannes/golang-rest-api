@@ -1,6 +1,9 @@
 package depedency
 
 import (
+	"reflect"
+	"strings"
+
 	"github.com/go-playground/locales/en_US"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -15,6 +18,16 @@ var (
 
 func InitializedValidator() {
 	v = validator.New()
+
+	// Custom Field Name
+	v.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+		// skip if tag key says it should be ignored
+		if name == "-" {
+			return ""
+		}
+		return name
+	})
 }
 
 func InitializedTranslator() {
@@ -27,4 +40,8 @@ func InitializedTranslator() {
 
 func GetValidator() *validator.Validate {
 	return v
+}
+
+func GetTranslator() ut.Translator {
+	return englishTrans
 }

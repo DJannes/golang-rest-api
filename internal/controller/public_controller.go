@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
 	"gitlab.com/janneseffendi/rest-api/depedency"
 	"gitlab.com/janneseffendi/rest-api/internal/dto"
@@ -50,36 +52,30 @@ func (c *PublicController) GetPublicData(w http.ResponseWriter, r *http.Request)
 }
 
 func (c *PublicController) SavePublicData(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
+	reqTime := time.Now()
 	reqJson, err := io.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error reading request body"))
+		res := dto.ResponseFailBuilder(err, reqTime)
+		render.Render(w, r, res)
 		return
 	}
 	defer r.Body.Close()
 
 	var req dto.SavePublicData
 	if err := json.Unmarshal(reqJson, &req); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error unmarshaling request"))
+		res := dto.ResponseFailBuilder(err, reqTime)
+		render.Render(w, r, res)
 		return
 	}
 
 	if err := c.validator.Struct(req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Error bad request" + err.Error()))
+		res := dto.ResponseFailBuilder(err, reqTime)
+		render.Render(w, r, res)
 		return
 	}
 
 	res := c.publicService.SavePublicData(req)
-	jsonData, err := json.Marshal(res)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Json Marshal Failed: " + err.Error()))
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+	httpRes := dto.ResponseOK(reqTime, res)
+	render.Render(w, r, httpRes)
+	w.Header().Add("Content-Type", "application/json")
 }

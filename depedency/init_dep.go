@@ -1,6 +1,6 @@
 package depedency
 
 func init() {
-	InitializedTranslator()
+	InitializedValidator()
 	InitializedTranslator()
 }
