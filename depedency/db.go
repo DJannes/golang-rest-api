@@ -10,7 +10,7 @@ import (
 
 var conPool *pgxpool.Pool
 
-func OpenConnectionPool() *pgxpool.Pool {
+func openConnectionPool() {
 	url := "user=postgres dbname=postgres password=admin sslmode=disable"
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
@@ -27,7 +27,7 @@ func OpenConnectionPool() *pgxpool.Pool {
 		panic("cant connect to database" + err.Error())
 	}
 
-	return dbPool
+	conPool = dbPool
 }
 
 func GetDbConnection() *pgxpool.Pool {

@@ -1,6 +1,7 @@
 package depedency
 
 func init() {
-	InitializedValidator()
-	InitializedTranslator()
+	initializedValidator()
+	initializedTranslator()
+	openConnectionPool()
 }

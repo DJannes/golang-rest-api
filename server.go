@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/sirupsen/logrus"
 	"gitlab.com/janneseffendi/rest-api/internal/controller"
 )
 
@@ -25,7 +25,8 @@ func main() {
 		controller.AddAuthRouter(r)
 	})
 
+	logrus.Info("starting server on localhost:8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
-		fmt.Println(err.Error())
+		logrus.Errorf("error starting server :%s", err.Error())
 	}
 }

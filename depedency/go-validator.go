@@ -16,7 +16,7 @@ var (
 	englishTrans  ut.Translator
 )
 
-func InitializedValidator() {
+func initializedValidator() {
 	v = validator.New()
 
 	// Custom Field Name
@@ -30,7 +30,7 @@ func InitializedValidator() {
 	})
 }
 
-func InitializedTranslator() {
+func initializedTranslator() {
 	english := en_US.New()
 	supportedLang = ut.New(english, english)
 

@@ -67,15 +67,15 @@ func ResponseBadRequest(reqTime time.Time, badErrs []Error) *RestResponse {
 	}
 }
 
-func ResponseInternalError(reqTime time.Time) *RestResponse {
+func ResponseInternalError(err error, reqTime time.Time) *RestResponse {
 	return &RestResponse{
-		Err:            nil,
+		Err:            err,
 		HttpStatusCode: http.StatusInternalServerError,
 
 		Data:         nil,
 		Code:         fmt.Sprint(http.StatusInternalServerError),
 		Status:       http.StatusText(http.StatusInternalServerError),
-		Message:      http.StatusText(http.StatusInternalServerError),
+		Message:      err.Error(),
 		RequestTime:  reqTime.Format(responseTimeFormat),
 		ResponseTime: time.Now().Format(responseTimeFormat),
 	}
@@ -100,5 +100,5 @@ func ResponseFailBuilder(err error, reqTime time.Time) *RestResponse {
 		return ResponseBadRequest(reqTime, badReqErrors)
 	}
 
-	return ResponseInternalError(reqTime)
+	return ResponseInternalError(err, reqTime)
 }

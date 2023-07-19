@@ -38,17 +38,15 @@ func AddPublicRouter(r chi.Router) chi.Router {
 }
 
 func (c *PublicController) GetPublicData(w http.ResponseWriter, r *http.Request) {
+	reqTime := time.Now()
 	w.Header().Add("Content-Type", "application/json")
-	publicData := c.publicService.GetPublicData()
-	jsonData, err := json.Marshal(publicData)
+	publicData, err := c.publicService.GetPublicData(r.Context())
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Json Marshal Failed: " + err.Error()))
+		render.Render(w, r, dto.ResponseFailBuilder(err, reqTime))
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
+	render.Render(w, r, dto.ResponseOK(reqTime, publicData))
 }
 
 func (c *PublicController) SavePublicData(w http.ResponseWriter, r *http.Request) {
