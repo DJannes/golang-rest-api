@@ -1,0 +1,11 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "../schema/dbqueries/"
+    schema: "../schema/dbschema/"
+    gen:
+      go:
+        sql_package: "pgx/v5"
+        emit_db_tags: true
+        package: "generated"
+        out: "../internal/repository/generated"
