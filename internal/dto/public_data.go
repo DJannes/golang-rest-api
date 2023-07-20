@@ -1,11 +1,15 @@
 package dto
 
-import "time"
-
 type PublicData struct {
-	PublicName         string    `json:"publicName"`
-	PublicDate         time.Time `json:"publicDate"`
-	PublicDescriptions []string  `json:"publicDescriptions"`
+	Email             string   `json:"email"`
+	Name              string   `json:"name"`
+	AdditionalInfo    []string `json:"additional_info"`
+	Birthdate         string   `json:"birthdate"`
+	AccBalanceNull    string   `json:"accBalanceNull"`
+	AccBalance        string   `json:"accBalance"`
+	UserCredentialsID int64    `json:"userCredentialsId"`
+	CommentsNull      []byte   `json:"commentsNull"`
+	Comments          []byte   `json:"comments"`
 }
 
 type SavePublicData struct {

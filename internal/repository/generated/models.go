@@ -6,16 +6,19 @@ package generated
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/shopspring/decimal"
 )
 
-type Person struct {
-	ID                int64              `db:"id"`
-	Uuid              pgtype.UUID        `db:"uuid"`
-	Email             string             `db:"email"`
-	Birthdate         pgtype.Timestamptz `db:"birthdate"`
-	AccBalance        pgtype.Numeric     `db:"acc_balance"`
-	AdditionalInfo    []string           `db:"additional_info"`
-	UserCredentialsID int64              `db:"user_credentials_id"`
-	CommentsNull      []byte             `db:"comments_null"`
-	Comments          []byte             `db:"comments"`
+type PublicDatum struct {
+	ID                int64               `db:"id"`
+	Uuid              pgtype.UUID         `db:"uuid"`
+	Email             string              `db:"email"`
+	Name              pgtype.Text         `db:"name"`
+	AdditionalInfo    []string            `db:"additional_info"`
+	Birthdate         pgtype.Timestamptz  `db:"birthdate"`
+	AccBalanceNull    decimal.NullDecimal `db:"acc_balance_null"`
+	AccBalance        decimal.Decimal     `db:"acc_balance"`
+	UserCredentialsID int64               `db:"user_credentials_id"`
+	CommentsNull      []byte              `db:"comments_null"`
+	Comments          []byte              `db:"comments"`
 }

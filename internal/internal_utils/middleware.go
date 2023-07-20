@@ -1,7 +1,6 @@
 package internal_utils
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -36,7 +35,7 @@ func TokenAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		fmt.Println(payload)
+		r = setPayloadToReqCtx(r, payload)
 		next.ServeHTTP(w, r)
 	})
 }

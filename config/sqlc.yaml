@@ -9,3 +9,14 @@ sql:
         emit_db_tags: true
         package: "generated"
         out: "../internal/repository/generated"
+        overrides:
+          - db_type: "pg_catalog.numeric"
+            go_type: "github.com/shopspring/decimal.Decimal"
+            nullable: false
+          - db_type: "pg_catalog.numeric"
+            go_type: "github.com/shopspring/decimal.NullDecimal"
+            nullable: true # when numeric is null, use this custom type
+            # go_type:
+            #   import: "github.com/jackc/pgx-shopspring-decimal"
+            #   package: "pgxdecimal"
+            #   type: "NullDecimal"

@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gitlab.com/janneseffendi/rest-api/depedency"
 	"gitlab.com/janneseffendi/rest-api/internal/dto"
+	"gitlab.com/janneseffendi/rest-api/internal/internal_utils"
 	"gitlab.com/janneseffendi/rest-api/internal/service"
 )
 
@@ -31,11 +32,20 @@ func AddPublicRouter(r chi.Router) chi.Router {
 	c := NewPublicController()
 	r.Route("/public", func(router chi.Router) {
 		router.Get("/", c.GetPublicData)
-		router.Post("/", c.SavePublicData)
+
+		router.Group(func(r chi.Router) {
+			r.Use(internal_utils.TokenAuth)
+			r.Post("/", c.SavePublicData)
+			r.Delete("/", c.DeletePublicData)
+		})
 	})
 
 	return r
 }
+
+const (
+	mockUUID = "15ea0672-24c7-4429-813a-056c58f09ffb"
+)
 
 func (c *PublicController) GetPublicData(w http.ResponseWriter, r *http.Request) {
 	reqTime := time.Now()
@@ -72,8 +82,26 @@ func (c *PublicController) SavePublicData(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	res := c.publicService.SavePublicData(req)
-	httpRes := dto.ResponseOK(reqTime, res)
+	if err := c.publicService.SavePublicData(r.Context(), mockUUID, req); err != nil {
+		res := dto.ResponseFailBuilder(err, reqTime)
+		render.Render(w, r, res)
+		return
+	}
+
+	httpRes := dto.ResponseOK(reqTime, nil)
+	render.Render(w, r, httpRes)
+	w.Header().Add("Content-Type", "application/json")
+}
+
+func (c *PublicController) DeletePublicData(w http.ResponseWriter, r *http.Request) {
+	reqTime := time.Now()
+	if err := c.publicService.DeletePublicData(r.Context(), mockUUID); err != nil {
+		res := dto.ResponseFailBuilder(err, reqTime)
+		render.Render(w, r, res)
+		return
+	}
+
+	httpRes := dto.ResponseOK(reqTime, nil)
 	render.Render(w, r, httpRes)
 	w.Header().Add("Content-Type", "application/json")
 }
