@@ -252,6 +252,9 @@ paths:
       summary: Save public data
       tags:
       - PublicData
+schemes:
+- http
+- https
 securityDefinitions:
   BasicAuth:
     type: basic

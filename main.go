@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -32,6 +29,7 @@ import (
 
 // @host		localhost:8080
 // @BasePath	/api/v1
+// @schemes http https
 // @securityDefinitions.basic BasicAuth
 // @securityDefinitions.apikey TokenAuth
 // @in header
@@ -52,12 +50,23 @@ func main() {
 	})
 
 	// Add Swagger
-	uri, err := url.Parse("http://localhost:8080/api/v1")
+
+	r.Get("/swagger/*", SwaggerHandler())
+
+	logrus.Info("starting server on localhost:8080")
+	if err := http.ListenAndServe(":8080", r); err != nil {
+		logrus.Errorf("error starting server :%s", err.Error())
+	}
+}
+
+func SwaggerHandler() http.HandlerFunc {
+	rootURL := "http://localhost:8080"
+	uri, err := url.Parse(rootURL + "/api/v1")
 	if err != nil {
 		panic(err)
 	}
-	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
+	return httpSwagger.Handler(
+		httpSwagger.URL(rootURL+"/swagger/doc.json"), //The url pointing to API definition
 		httpSwagger.BeforeScript(`const UrlMutatorPlugin = (system) => ({
 			rootInjects: {
 			  setScheme: (scheme) => {
@@ -89,33 +98,5 @@ func main() {
 			  window.ui.setBasePath('%s');
 			}`, uri.Scheme, uri.Host, uri.Path),
 		}),
-	))
-
-	logrus.Info("starting server on localhost:8080")
-	if err := http.ListenAndServe(":8080", r); err != nil {
-		logrus.Errorf("error starting server :%s", err.Error())
-	}
-}
-
-func OpenApi3Server(r chi.Router) {
-	path := "/swagger-ui"
-	workDir, _ := os.Getwd()
-	filesDir := http.Dir(filepath.Join(workDir, "static", "swagger-ui"))
-
-	if strings.ContainsAny(path, "{}*") {
-		panic("FileServer does not permit any URL parameters.")
-	}
-
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
-		path += "/"
-	}
-	path += "*"
-
-	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
-		rctx := chi.RouteContext(r.Context())
-		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
-		fs := http.StripPrefix(pathPrefix, http.FileServer(filesDir))
-		fs.ServeHTTP(w, r)
-	})
+	)
 }
