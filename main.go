@@ -50,7 +50,6 @@ func main() {
 	})
 
 	// Add Swagger
-
 	r.Get("/swagger/*", SwaggerHandler())
 
 	logrus.Info("starting server on localhost:8080")
