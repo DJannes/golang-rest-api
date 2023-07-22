@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -32,17 +31,27 @@ func AddAuthRouter(r chi.Router) chi.Router {
 	return r
 }
 
+// GetToken godoc
+// @Security BasicAuth
+//
+//	@Summary		Get Token for authentication
+//	@Description	Get Token for authentication
+//	@Tags			0. Auth
+//	@Accept			json
+//	@Produce		plain
+//
+//	@Success		200	{string}	string "Success Response"
+//	@Router			/auth [get]
 func (c *AuthController) GetToken(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
 	username, password, ok := r.BasicAuth()
 	if !ok {
-		w.Header().Add("WWW-Authenticate", fmt.Sprintf(`Basic realm="basic auth"`))
+		w.Header().Add("WWW-Authenticate", `Basic realm="basic auth"`)
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	if password != "mockpassword" {
-		w.Header().Add("WWW-Authenticate", fmt.Sprintf(`Basic realm="basic auth"`))
+		w.Header().Add("WWW-Authenticate", `Basic realm="basic auth"`)
 		w.Write([]byte("Password not matched"))
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -58,6 +67,17 @@ func (c *AuthController) GetToken(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(token))
 }
 
+// TestToken godoc
+// @Security TokenAuth
+//
+//	@Summary		Test Token for authentication
+//	@Description	Test Token for auth
+//	@Tags			0. Auth
+//	@Accept			json
+//	@Produce		plain
+//
+//	@Success		200	{string}	string "Success Response"
+//	@Router			/auth/test-token [get]
 func (c *AuthController) TestToken(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("ok"))
 }

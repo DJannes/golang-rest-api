@@ -1,0 +1,262 @@
+basePath: /api/v1
+definitions:
+  dto.ErrResponseForSwaggerDocsOnly:
+    properties:
+      code:
+        example: "400"
+        type: string
+      data: {}
+      errors:
+        items:
+          $ref: '#/definitions/dto.Error'
+        type: array
+      message:
+        example: Request Body Is not Valid
+        type: string
+      requestTime:
+        example: 2010-01-25T13:00:00
+        type: string
+      responseTime:
+        example: 2010-01-25T13:00:00
+        type: string
+      status:
+        example: Bad Request
+        type: string
+    type: object
+  dto.Error:
+    properties:
+      fieldError:
+        example: publicName is required
+        type: string
+      fieldName:
+        example: publicName
+        type: string
+    type: object
+  dto.PublicData:
+    properties:
+      accBalance:
+        example: "10000.20"
+        type: string
+      accBalanceNull:
+        example: "0.20"
+        type: string
+      additional_info:
+        example:
+        - Info1
+        - ' Info2'
+        - ' Info3'
+        items:
+          type: string
+        type: array
+      birthdate:
+        example: "2010-03-10"
+        type: string
+      comments:
+        example: '{a: abc}'
+        type: string
+      commentsNull:
+        example: '{}'
+        type: string
+      email:
+        example: Email Public
+        format: email
+        type: string
+      name:
+        example: Nama Public
+        type: string
+      userCredentialsId:
+        example: 1
+        type: integer
+    type: object
+  dto.RestResponse:
+    properties:
+      code:
+        example: "200"
+        type: string
+      data: {}
+      message:
+        example: Success
+        type: string
+      requestTime:
+        example: 2010-01-25T13:00:00
+        type: string
+      responseTime:
+        example: 2010-01-25T13:00:00
+        type: string
+      status:
+        example: OK
+        type: string
+    type: object
+  dto.SavePublicData:
+    properties:
+      publicDate:
+        example: "2010-10-12"
+        maxLength: 16
+        minLength: 4
+        type: string
+      publicDescriptions:
+        example:
+        - data
+        - data2
+        - data3
+        items:
+          maxLength: 16
+          minLength: 4
+          type: string
+        type: array
+      publicName:
+        example: Nama Publik
+        maxLength: 16
+        minLength: 4
+        type: string
+    required:
+    - publicDate
+    - publicDescriptions
+    - publicName
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Simple Rest Api server with full features
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Rest Api Example
+  version: "1.0"
+paths:
+  /auth:
+    get:
+      consumes:
+      - application/json
+      description: Get Token for authentication
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Success Response
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Get Token for authentication
+      tags:
+      - 0. Auth
+  /auth/test-token:
+    get:
+      consumes:
+      - application/json
+      description: Test Token for auth
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Success Response
+          schema:
+            type: string
+      security:
+      - TokenAuth: []
+      summary: Test Token for authentication
+      tags:
+      - 0. Auth
+  /public:
+    delete:
+      consumes:
+      - application/json
+      description: Save Public Data
+      parameters:
+      - description: uuid data to be deleted
+        in: header
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success Response
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.RestResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PublicData'
+              type: object
+      security:
+      - TokenAuth: []
+      summary: Save public data
+      tags:
+      - PublicData
+    get:
+      consumes:
+      - application/json
+      description: Getting Public Data
+      parameters:
+      - description: uuid in header
+        in: header
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success Response On public data
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.RestResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PublicData'
+                errors:
+                  $ref: '#/definitions/dto.Error'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponseForSwaggerDocsOnly'
+      summary: Get public data
+      tags:
+      - PublicData
+    post:
+      consumes:
+      - application/json
+      description: Save Public Data
+      parameters:
+      - description: Save Public Data Request Body
+        in: body
+        name: reqBody
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SavePublicData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success Response
+          schema:
+            allOf:
+            - $ref: '#/definitions/dto.RestResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PublicData'
+              type: object
+      security:
+      - TokenAuth: []
+      summary: Save public data
+      tags:
+      - PublicData
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  TokenAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -19,18 +19,28 @@ type RestResponse struct {
 	Err            error `json:"-"`
 	HttpStatusCode int   `json:"-"`
 
-	Errors       []Error `json:"errors,omitempty"`
-	Code         string  `json:"code"`
-	Status       string  `json:"status"`
-	Message      string  `json:"message"`
+	Errors       []Error `json:"errors,omitempty" swaggerignore:"true"`
+	Code         string  `json:"code" example:"200"`
+	Status       string  `json:"status" example:"OK"`
+	Message      string  `json:"message" example:"Success"`
 	Data         any     `json:"data"`
-	RequestTime  string  `json:"requestTime"`
-	ResponseTime string  `json:"responseTime"`
+	RequestTime  string  `json:"requestTime" example:"2010-01-25T13:00:00"`
+	ResponseTime string  `json:"responseTime" example:"2010-01-25T13:00:00"`
+}
+
+type ErrResponseForSwaggerDocsOnly struct {
+	Errors       []Error `json:"errors,omitempty"`
+	Code         string  `json:"code" example:"400"`
+	Status       string  `json:"status" example:"Bad Request"`
+	Message      string  `json:"message" example:"Request Body Is not Valid"`
+	Data         any     `json:"data"`
+	RequestTime  string  `json:"requestTime" example:"2010-01-25T13:00:00"`
+	ResponseTime string  `json:"responseTime" example:"2010-01-25T13:00:00"`
 }
 
 type Error struct {
-	FieldName  string `json:"fieldName"`
-	FieldError string `json:"fieldError"`
+	FieldName  string `json:"fieldName" example:"publicName"`
+	FieldError string `json:"fieldError" example:"publicName is required"`
 }
 
 func (e *RestResponse) Render(w http.ResponseWriter, r *http.Request) error {

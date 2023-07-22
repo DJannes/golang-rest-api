@@ -1,0 +1,398 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Simple Rest Api server with full features",
+        "title": "Rest Api Example",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/auth": {
+            "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Get Token for authentication",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "0. Auth"
+                ],
+                "summary": "Get Token for authentication",
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/test-token": {
+            "get": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
+                "description": "Test Token for auth",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "0. Auth"
+                ],
+                "summary": "Test Token for authentication",
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/public": {
+            "get": {
+                "description": "Getting Public Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PublicData"
+                ],
+                "summary": "Get public data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "uuid in header",
+                        "name": "uuid",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Response On public data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.RestResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.PublicData"
+                                        },
+                                        "errors": {
+                                            "$ref": "#/definitions/dto.Error"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrResponseForSwaggerDocsOnly"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
+                "description": "Save Public Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PublicData"
+                ],
+                "summary": "Save public data",
+                "parameters": [
+                    {
+                        "description": "Save Public Data Request Body",
+                        "name": "reqBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SavePublicData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.RestResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.PublicData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
+                "description": "Save Public Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PublicData"
+                ],
+                "summary": "Save public data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "uuid data to be deleted",
+                        "name": "uuid",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success Response",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/dto.RestResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.PublicData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.ErrResponseForSwaggerDocsOnly": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "400"
+                },
+                "data": {},
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Error"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Request Body Is not Valid"
+                },
+                "requestTime": {
+                    "type": "string",
+                    "example": "2010-01-25T13:00:00"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "2010-01-25T13:00:00"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "Bad Request"
+                }
+            }
+        },
+        "dto.Error": {
+            "type": "object",
+            "properties": {
+                "fieldError": {
+                    "type": "string",
+                    "example": "publicName is required"
+                },
+                "fieldName": {
+                    "type": "string",
+                    "example": "publicName"
+                }
+            }
+        },
+        "dto.PublicData": {
+            "type": "object",
+            "properties": {
+                "accBalance": {
+                    "type": "string",
+                    "example": "10000.20"
+                },
+                "accBalanceNull": {
+                    "type": "string",
+                    "example": "0.20"
+                },
+                "additional_info": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "Info1",
+                        " Info2",
+                        " Info3"
+                    ]
+                },
+                "birthdate": {
+                    "type": "string",
+                    "example": "2010-03-10"
+                },
+                "comments": {
+                    "type": "string",
+                    "example": "{a: abc}"
+                },
+                "commentsNull": {
+                    "type": "string",
+                    "example": "{}"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "Email Public"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Nama Public"
+                },
+                "userCredentialsId": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "dto.RestResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "200"
+                },
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "Success"
+                },
+                "requestTime": {
+                    "type": "string",
+                    "example": "2010-01-25T13:00:00"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "2010-01-25T13:00:00"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "OK"
+                }
+            }
+        },
+        "dto.SavePublicData": {
+            "type": "object",
+            "required": [
+                "publicDate",
+                "publicDescriptions",
+                "publicName"
+            ],
+            "properties": {
+                "publicDate": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 4,
+                    "example": "2010-10-12"
+                },
+                "publicDescriptions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "maxLength": 16,
+                        "minLength": 4
+                    },
+                    "example": [
+                        "data",
+                        "data2",
+                        "data3"
+                    ]
+                },
+                "publicName": {
+                    "type": "string",
+                    "maxLength": 16,
+                    "minLength": 4,
+                    "example": "Nama Publik"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        },
+        "TokenAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "externalDocs": {
+        "description": "OpenAPI",
+        "url": "https://swagger.io/resources/open-api/"
+    }
+}
