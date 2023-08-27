@@ -1,4 +1,4 @@
-prequisite:
+setup:
 	go mod tidy
 	go install github.com/swaggo/swag/cmd/swag@latest
 	go get -u github.com/swaggo/http-swagger
@@ -7,23 +7,20 @@ prequisite:
 run:
 	swag init && go run main.go
 
-sqlc-gen:
+sqlgen:
 	docker run --rm -v "%cd%:/src" -w /src/config kjconroy/sqlc generate
 
-docker-up:
+up:
 	docker compose -f devops/docker-compose.yaml up
 
-docker-down:
+down:
 	docker compose -f devops/docker-compose.yaml down
 
-migrate-up-x:
-	migrate -verbose -source file://schema/migrations -database postgres://postgres:admin@localhost:5432/postgres?sslmode=disable"&"search_path=master up
-
-migrate-up:
+dbup:
 	migrate -verbose -source file://schema/migrations -database postgres://postgres:admin@localhost:5432/postgres?sslmode=disable up
 
-migrate-down:
+dbdown:
 	migrate -verbose -source file://schema/migrations -database postgres://postgres:admin@localhost:5432/postgres?sslmode=disable down --all
 
-migrate-force:
+dbforce:
 	migrate -verbose -source file://schema/migrations -database postgres://postgres:admin@localhost:5432/postgres?sslmode=disable force $(version)

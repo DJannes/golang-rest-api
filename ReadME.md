@@ -1,13 +1,34 @@
-# Pre
-Buat documentasi
-# Thing to Remember
+# Prequisite Tools
+- Docker
 
+# Setup Using Make
+```sh
+make setup
+make up
+make run
+```
 
-# Third Party Packages
+# Setup not using "Make"
+- Copy and Paste command from Makefile
+
+# Features
+- [x] Clean Architecture
+- [x] Rest API CRUD
+- [x] Swagger 2.0 Documentation
+- [x] Validator With English Translation
+- [x] Authentication
+  - [x] Basic Authentication
+  - [x] Token Authentication
+- [x] SQL Generator
+- [] Marketplace API
+
+# Used Tools
+- https://github.com/swaggo/swag
+```
+Generate Swgger2.0 + Serve SwaggerUI (Incoming OpenApi3)
+```
+
+# Alternative Package For OpenApi3
 - github.com/getkin/kin-openapi => Generate OpenApi3 Json
-- https://github.com/deepmap/oapi-codegen => Generate Swagger Server
-- https://github.com/swaggo/swag => Generate Swgger2.0 + Serve SwaggerUI (Incoming OpenApi3)
-- https://github.com/golang-migrate/migrate/tree/master/cmd/migrate => Sql Migration
-
-# References
-https://mariocarrion.com/2021/05/02/golang-microservices-rest-api-openapi3-swagger-ui.html
+- https://github.com/deepmap/oapi-codegen => Generate Swagger Server on OpenApi Json
+- https://mariocarrion.com/2021/05/02/golang-microservices-rest-api-openapi3-swagger-ui.html

@@ -19,7 +19,7 @@ type AuthController struct {
 func NewAuthController(dep *depedency.RestDeps) *AuthController {
 	return &AuthController{
 		publicService: service.NewPublicService(dep),
-		tokenGen:      security.NewMockPasetoGen(),
+		tokenGen:      dep.Paseto,
 	}
 }
 

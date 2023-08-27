@@ -7,9 +7,13 @@ import (
 	"gitlab.com/janneseffendi/rest-api/internal/security"
 )
 
+const (
+	AUTHORIZATION = "Authorization"
+)
+
 func TokenAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := r.Header.Get("Authorization")
+		authHeader := r.Header.Get(AUTHORIZATION)
 		if authHeader == "" {
 			w.Write([]byte("Authorization Required"))
 			w.WriteHeader(http.StatusUnauthorized)

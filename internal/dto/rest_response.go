@@ -29,7 +29,6 @@ type RestResponse struct {
 	Errors       []Error `json:"errors,omitempty"`
 	Code         string  `json:"code"`
 	Status       string  `json:"status"`
-	Message      string  `json:"message"`
 	Data         any     `json:"data"`
 	RequestTime  string  `json:"requestTime"`
 	ResponseTime string  `json:"responseTime"`
@@ -48,7 +47,6 @@ func ResponseOK(reqTime time.Time, data any) *RestResponse {
 		Data:         data,
 		Code:         SUCCESS_CODE,
 		Status:       SUCCESS_MESSAGE,
-		Message:      SUCCESS_MESSAGE,
 		RequestTime:  reqTime.Format(responseTimeFormat),
 		ResponseTime: time.Now().Format(responseTimeFormat),
 	}
@@ -62,7 +60,6 @@ func ResponseBadRequest(reqTime time.Time, badErrs []Error) *RestResponse {
 		Errors:       badErrs,
 		Code:         fmt.Sprint(http.StatusBadRequest),
 		Status:       http.StatusText(http.StatusBadRequest),
-		Message:      http.StatusText(http.StatusBadRequest),
 		RequestTime:  reqTime.Format(responseTimeFormat),
 		ResponseTime: time.Now().Format(responseTimeFormat),
 	}
@@ -73,9 +70,11 @@ func ResponseInternalError(err error, reqTime time.Time) *RestResponse {
 		Err:            err,
 		HttpStatusCode: http.StatusInternalServerError,
 
-		Code:         fmt.Sprint(http.StatusInternalServerError),
-		Status:       http.StatusText(http.StatusInternalServerError),
-		Message:      err.Error(),
+		Code:   fmt.Sprint(http.StatusInternalServerError),
+		Status: http.StatusText(http.StatusInternalServerError),
+		Errors: []Error{
+			Error{Message: http.StatusText(http.StatusInternalServerError)},
+		},
 		RequestTime:  reqTime.Format(responseTimeFormat),
 		ResponseTime: time.Now().Format(responseTimeFormat),
 	}
