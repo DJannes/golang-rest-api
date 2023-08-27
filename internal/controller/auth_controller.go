@@ -4,28 +4,30 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"gitlab.com/janneseffendi/rest-api/internal/internal_utils"
+	"gitlab.com/janneseffendi/rest-api/depedency"
+	"gitlab.com/janneseffendi/rest-api/internal/middleware"
+	"gitlab.com/janneseffendi/rest-api/internal/security"
 	"gitlab.com/janneseffendi/rest-api/internal/service"
 )
 
 type AuthController struct {
 	publicService *service.PublicService
 
-	tokenGen *internal_utils.PasetoGen
+	tokenGen *security.PasetoGen
 }
 
-func NewAuthController() *AuthController {
+func NewAuthController(dep *depedency.RestDeps) *AuthController {
 	return &AuthController{
-		publicService: service.NewPublicService(),
-		tokenGen:      internal_utils.NewMockPasetoGen(),
+		publicService: service.NewPublicService(dep),
+		tokenGen:      security.NewMockPasetoGen(),
 	}
 }
 
-func AddAuthRouter(r chi.Router) chi.Router {
-	c := NewAuthController()
+func AddAuthRouter(dep *depedency.RestDeps, r chi.Router) chi.Router {
+	c := NewAuthController(dep)
 	r.Route("/auth", func(router chi.Router) {
 		router.Get("/", c.GetToken)
-		router.With(internal_utils.TokenAuth).Get("/test-token", c.TestToken)
+		router.With(middleware.TokenAuth).Get("/test-token", c.TestToken)
 	})
 
 	return r

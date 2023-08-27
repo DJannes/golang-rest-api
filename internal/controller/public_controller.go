@@ -11,30 +11,29 @@ import (
 	"github.com/go-playground/validator/v10"
 	"gitlab.com/janneseffendi/rest-api/depedency"
 	"gitlab.com/janneseffendi/rest-api/internal/dto"
-	"gitlab.com/janneseffendi/rest-api/internal/internal_utils"
+	"gitlab.com/janneseffendi/rest-api/internal/middleware"
 	"gitlab.com/janneseffendi/rest-api/internal/service"
 )
 
 type PublicController struct {
 	publicService *service.PublicService
-
-	validator *validator.Validate
+	validator     *validator.Validate
 }
 
-func NewPublicController() *PublicController {
+func NewPublicController(dep *depedency.RestDeps) *PublicController {
 	return &PublicController{
-		publicService: service.NewPublicService(),
-		validator:     depedency.GetValidator(),
+		publicService: service.NewPublicService(dep),
+		validator:     dep.Validator,
 	}
 }
 
-func AddPublicRouter(r chi.Router) chi.Router {
-	c := NewPublicController()
+func AddPublicRouter(dep *depedency.RestDeps, r chi.Router) chi.Router {
+	c := NewPublicController(dep)
 	r.Route("/public", func(router chi.Router) {
 		router.Get("/", c.GetPublicData)
 
 		router.Group(func(r chi.Router) {
-			r.Use(internal_utils.TokenAuth)
+			r.Use(middleware.TokenAuth)
 			r.Post("/", c.SavePublicData)
 			r.Delete("/", c.DeletePublicData)
 		})
@@ -57,11 +56,12 @@ const (
 //
 // @Param uuid header string true "uuid in header"
 //
-//	@Success		200	{object}	dto.RestResponse{data=dto.PublicData,errors=dto.Error} "Success Response On public data"
-//	@Failure		400	{object}	dto.ErrResponseForSwaggerDocsOnly
+//	@Success		200	{object}	dto.SuccessResponseForSwaggerDocs{data=dto.PublicData} "Success Response On public data"
+//	@Failure		400	{object}	dto.ErrResponseForSwaggerDocs
 //	@Router			/public [get]
 func (c *PublicController) GetPublicData(w http.ResponseWriter, r *http.Request) {
 	reqTime := time.Now()
+
 	w.Header().Add("Content-Type", "application/json")
 	publicData, err := c.publicService.GetPublicData(r.Context())
 	if err != nil {
@@ -86,6 +86,7 @@ func (c *PublicController) GetPublicData(w http.ResponseWriter, r *http.Request)
 //	@Success		200	{object}	dto.RestResponse{data=dto.PublicData} "Success Response"
 //	@Router			/public [post]
 func (c *PublicController) SavePublicData(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
 	reqTime := time.Now()
 	reqJson, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -116,7 +117,7 @@ func (c *PublicController) SavePublicData(w http.ResponseWriter, r *http.Request
 
 	httpRes := dto.ResponseOK(reqTime, nil)
 	render.Render(w, r, httpRes)
-	w.Header().Add("Content-Type", "application/json")
+
 }
 
 // DeletePublicData godoc

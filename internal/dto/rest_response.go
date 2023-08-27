@@ -13,34 +13,26 @@ import (
 
 const (
 	responseTimeFormat = "2006-01-02T15:04:05"
+	SUCCESS_CODE       = "000"
+	SUCCESS_MESSAGE    = "SUCCESS"
 )
+
+type Error struct {
+	FieldName string `json:"fieldName"`
+	Message   string `json:"message"`
+}
 
 type RestResponse struct {
 	Err            error `json:"-"`
 	HttpStatusCode int   `json:"-"`
 
-	Errors       []Error `json:"errors,omitempty" swaggerignore:"true"`
-	Code         string  `json:"code" example:"200"`
-	Status       string  `json:"status" example:"OK"`
-	Message      string  `json:"message" example:"Success"`
-	Data         any     `json:"data"`
-	RequestTime  string  `json:"requestTime" example:"2010-01-25T13:00:00"`
-	ResponseTime string  `json:"responseTime" example:"2010-01-25T13:00:00"`
-}
-
-type ErrResponseForSwaggerDocsOnly struct {
 	Errors       []Error `json:"errors,omitempty"`
-	Code         string  `json:"code" example:"400"`
-	Status       string  `json:"status" example:"Bad Request"`
-	Message      string  `json:"message" example:"Request Body Is not Valid"`
+	Code         string  `json:"code"`
+	Status       string  `json:"status"`
+	Message      string  `json:"message"`
 	Data         any     `json:"data"`
-	RequestTime  string  `json:"requestTime" example:"2010-01-25T13:00:00"`
-	ResponseTime string  `json:"responseTime" example:"2010-01-25T13:00:00"`
-}
-
-type Error struct {
-	FieldName  string `json:"fieldName" example:"publicName"`
-	FieldError string `json:"fieldError" example:"publicName is required"`
+	RequestTime  string  `json:"requestTime"`
+	ResponseTime string  `json:"responseTime"`
 }
 
 func (e *RestResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -54,9 +46,9 @@ func ResponseOK(reqTime time.Time, data any) *RestResponse {
 		HttpStatusCode: http.StatusOK,
 
 		Data:         data,
-		Code:         fmt.Sprint(http.StatusOK),
-		Status:       http.StatusText(http.StatusOK),
-		Message:      http.StatusText(http.StatusOK),
+		Code:         SUCCESS_CODE,
+		Status:       SUCCESS_MESSAGE,
+		Message:      SUCCESS_MESSAGE,
 		RequestTime:  reqTime.Format(responseTimeFormat),
 		ResponseTime: time.Now().Format(responseTimeFormat),
 	}
@@ -68,7 +60,6 @@ func ResponseBadRequest(reqTime time.Time, badErrs []Error) *RestResponse {
 		HttpStatusCode: http.StatusBadRequest,
 
 		Errors:       badErrs,
-		Data:         nil,
 		Code:         fmt.Sprint(http.StatusBadRequest),
 		Status:       http.StatusText(http.StatusBadRequest),
 		Message:      http.StatusText(http.StatusBadRequest),
@@ -82,7 +73,6 @@ func ResponseInternalError(err error, reqTime time.Time) *RestResponse {
 		Err:            err,
 		HttpStatusCode: http.StatusInternalServerError,
 
-		Data:         nil,
 		Code:         fmt.Sprint(http.StatusInternalServerError),
 		Status:       http.StatusText(http.StatusInternalServerError),
 		Message:      err.Error(),
@@ -98,13 +88,14 @@ func ResponseFailBuilder(err error, reqTime time.Time) *RestResponse {
 
 	var validationErr validator.ValidationErrors
 	if errors.As(err, &validationErr) {
-		englishTranslator := depedency.GetTranslator()
+		englishTranslator := depedency.GetEnTranslator()
 		badReqErrors := make([]Error, 0)
+
 		for _, e := range validationErr {
 			fieldErr := e.Translate(englishTranslator)
 			badReqErrors = append(badReqErrors, Error{
-				FieldName:  e.Field(),
-				FieldError: fieldErr,
+				FieldName: e.Field(),
+				Message:   fieldErr,
 			})
 		}
 		return ResponseBadRequest(reqTime, badReqErrors)

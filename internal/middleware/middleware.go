@@ -1,13 +1,15 @@
-package internal_utils
+package middleware
 
 import (
 	"net/http"
 	"strings"
+
+	"gitlab.com/janneseffendi/rest-api/internal/security"
 )
 
 func TokenAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := r.Header.Get(HTTP_AUTHORIZATION_HEADER)
+		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			w.Write([]byte("Authorization Required"))
 			w.WriteHeader(http.StatusUnauthorized)
@@ -22,7 +24,7 @@ func TokenAuth(next http.Handler) http.Handler {
 		}
 
 		bearerToken, _ := strings.CutPrefix(authHeader, bearerPrefix)
-		pasetoGen := NewMockPasetoGen()
+		pasetoGen := security.NewMockPasetoGen()
 		payload, err := pasetoGen.VerifyToken(bearerToken)
 		if err != nil {
 			w.Write([]byte("token invalid" + err.Error()))

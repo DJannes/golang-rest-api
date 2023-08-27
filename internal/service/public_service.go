@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/shopspring/decimal"
+	"gitlab.com/janneseffendi/rest-api/depedency"
 	"gitlab.com/janneseffendi/rest-api/internal/dto"
 	"gitlab.com/janneseffendi/rest-api/internal/internal_utils"
 	"gitlab.com/janneseffendi/rest-api/internal/repository"
@@ -14,12 +15,12 @@ import (
 )
 
 type PublicService struct {
-	repo *repository.Repository
+	repo *repository.Repo
 }
 
-func NewPublicService() *PublicService {
+func NewPublicService(dep *depedency.RestDeps) *PublicService {
 	return &PublicService{
-		repo: repository.NewRepository(),
+		repo: dep.Repo,
 	}
 }
 
@@ -32,13 +33,13 @@ func (s *PublicService) GetPublicData(ctx context.Context) (*dto.PublicData, err
 	return &dto.PublicData{
 		Email:             publicData.Email,
 		Name:              publicData.Name.String,
-		AdditionalInfo:    publicData.AdditionalInfo,
+		Hobbies:           publicData.Hobbies,
 		Birthdate:         publicData.Birthdate.Time.Format("2006-01-02"),
 		AccBalanceNull:    publicData.AccBalanceNull.Decimal.StringFixed(0),
 		AccBalance:        publicData.AccBalance.StringFixed(5),
 		UserCredentialsID: publicData.UserCredentialsID,
-		CommentsNull:      publicData.CommentsNull,
-		Comments:          publicData.Comments,
+		AdditonalInfo:     publicData.AdditionalInfo,
+		ImportantNotes:    publicData.ImportantNotes,
 	}, nil
 }
 
@@ -48,13 +49,13 @@ func (s *PublicService) SavePublicData(ctx context.Context, uuid string, req dto
 		Uuid:              pgtype.UUID{Bytes: internal_utils.GetUUIDFromString(uuid), Valid: true},
 		Email:             "test@gmail.com",
 		Name:              pgtype.Text{String: req.PublicName, Valid: true},
-		AdditionalInfo:    req.PublicDescriptions,
 		Birthdate:         pgtype.Timestamptz{Time: birthDate, Valid: true},
 		AccBalance:        decimal.NewFromFloat(0.123412),
 		AccBalanceNull:    decimal.NullDecimal{},
 		UserCredentialsID: 1,
-		Comments:          []byte("{}"),
-		CommentsNull:      nil,
+		Hobbies:           []string{},
+		AdditionalInfo:    nil,
+		ImportantNotes:    []byte("{}"),
 	}); err != nil {
 		return fmt.Errorf("UpsertPublicDataByUUID: %w", err)
 	}

@@ -1,17 +1,16 @@
 package repository
 
 import (
-	"gitlab.com/janneseffendi/rest-api/depedency"
+	"github.com/jackc/pgx/v5/pgxpool"
 	public "gitlab.com/janneseffendi/rest-api/internal/repository/generated"
 )
 
-type Repository struct {
+type Repo struct {
 	PublicRepo *public.Queries
 }
 
-func NewRepository() *Repository {
-	con := depedency.GetDbConnection()
-	return &Repository{
+func NewRepo(con *pgxpool.Pool) *Repo {
+	return &Repo{
 		PublicRepo: public.New(con),
 	}
 }

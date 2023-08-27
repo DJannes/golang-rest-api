@@ -109,16 +109,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/dto.RestResponse"
+                                    "$ref": "#/definitions/dto.SuccessResponseForSwaggerDocs"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/dto.PublicData"
-                                        },
-                                        "errors": {
-                                            "$ref": "#/definitions/dto.Error"
                                         }
                                     }
                                 }
@@ -128,7 +125,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrResponseForSwaggerDocsOnly"
+                            "$ref": "#/definitions/dto.ErrResponseForSwaggerDocs"
                         }
                     }
                 }
@@ -232,7 +229,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.ErrResponseForSwaggerDocsOnly": {
+        "dto.ErrResponseForSwaggerDocs": {
             "type": "object",
             "properties": {
                 "code": {
@@ -267,13 +264,11 @@ const docTemplate = `{
         "dto.Error": {
             "type": "object",
             "properties": {
-                "fieldError": {
-                    "type": "string",
-                    "example": "publicName is required"
-                },
                 "fieldName": {
-                    "type": "string",
-                    "example": "publicName"
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -330,25 +325,26 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "code": {
-                    "type": "string",
-                    "example": "200"
+                    "type": "string"
                 },
                 "data": {},
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Error"
+                    }
+                },
                 "message": {
-                    "type": "string",
-                    "example": "Success"
+                    "type": "string"
                 },
                 "requestTime": {
-                    "type": "string",
-                    "example": "2010-01-25T13:00:00"
+                    "type": "string"
                 },
                 "responseTime": {
-                    "type": "string",
-                    "example": "2010-01-25T13:00:00"
+                    "type": "string"
                 },
                 "status": {
-                    "type": "string",
-                    "example": "OK"
+                    "type": "string"
                 }
             }
         },
@@ -384,6 +380,32 @@ const docTemplate = `{
                     "maxLength": 16,
                     "minLength": 4,
                     "example": "Nama Publik"
+                }
+            }
+        },
+        "dto.SuccessResponseForSwaggerDocs": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "000"
+                },
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "SUCCESS"
+                },
+                "requestTime": {
+                    "type": "string",
+                    "example": "2010-01-25T13:00:00"
+                },
+                "responseTime": {
+                    "type": "string",
+                    "example": "2010-01-25T13:00:00"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "SUCCESS"
                 }
             }
         }

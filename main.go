@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/sirupsen/logrus"
+	"gitlab.com/janneseffendi/rest-api/depedency"
 	"gitlab.com/janneseffendi/rest-api/internal/controller"
 
 	httpSwagger "github.com/swaggo/http-swagger/v2"
@@ -44,9 +45,11 @@ func main() {
 		middleware.Recoverer,
 	)
 
+	// Initialize Deps
+	restDep := depedency.GetRestDeps()
 	r.Route("/api/v1", func(r chi.Router) {
-		controller.AddPublicRouter(r)
-		controller.AddAuthRouter(r)
+		controller.AddPublicRouter(restDep, r)
+		controller.AddAuthRouter(restDep, r)
 	})
 
 	// Add Swagger

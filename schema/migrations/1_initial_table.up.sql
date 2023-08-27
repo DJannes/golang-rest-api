@@ -1,18 +1,22 @@
 BEGIN;
 
-CREATE TABLE public.public_data (
+CREATE TABLE IF NOT EXISTS public.public_data (
 	id BIGSERIAL PRIMARY KEY,
-	uuid uuid NULL UNIQUE,
+	uuid uuid NOT NULL UNIQUE,
 
-	email VARCHAR(255) NOT NULL UNIQUE,
 	name varchar,
-    additional_info VARCHAR[],
+	email VARCHAR(255) NOT NULL UNIQUE,
 	birthdate TIMESTAMPTZ NOT NULL,
-    acc_balance_null numeric(10, 10), -- For "currency" precision
+
 	acc_balance numeric(10, 10) NOT NULL,
-    user_credentials_id INT8 NOT NULL,
-	comments_null jsonb NULL,
-    comments jsonb NOT NULL
+	acc_balance_null numeric(10, 10), -- For "currency" precision
+
+	user_credentials_id INT8 NOT NULL,
+
+	hobbies VARCHAR[],
+
+    important_notes jsonb NOT NULL,
+	additional_info jsonb NULL
 );
 
 COMMIT;

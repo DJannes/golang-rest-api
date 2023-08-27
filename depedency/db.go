@@ -8,9 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-var conPool *pgxpool.Pool
-
-func openConnectionPool() {
+func GetConnectionPool() *pgxpool.Pool {
 	url := "user=postgres dbname=postgres password=admin sslmode=disable"
 	config, err := pgxpool.ParseConfig(url)
 	if err != nil {
@@ -27,9 +25,5 @@ func openConnectionPool() {
 		panic("cant connect to database" + err.Error())
 	}
 
-	conPool = dbPool
-}
-
-func GetDbConnection() *pgxpool.Pool {
-	return conPool
+	return dbPool
 }

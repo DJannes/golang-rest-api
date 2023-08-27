@@ -1,7 +1,11 @@
 prequisite:
+	go mod tidy
 	go install github.com/swaggo/swag/cmd/swag@latest
 	go get -u github.com/swaggo/http-swagger
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+run:
+	swag init && go run main.go
 
 sqlc-gen:
 	docker run --rm -v "%cd%:/src" -w /src/config kjconroy/sqlc generate

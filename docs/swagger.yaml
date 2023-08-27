@@ -1,6 +1,6 @@
 basePath: /api/v1
 definitions:
-  dto.ErrResponseForSwaggerDocsOnly:
+  dto.ErrResponseForSwaggerDocs:
     properties:
       code:
         example: "400"
@@ -25,11 +25,9 @@ definitions:
     type: object
   dto.Error:
     properties:
-      fieldError:
-        example: publicName is required
-        type: string
       fieldName:
-        example: publicName
+        type: string
+      message:
         type: string
     type: object
   dto.PublicData:
@@ -71,20 +69,19 @@ definitions:
   dto.RestResponse:
     properties:
       code:
-        example: "200"
         type: string
       data: {}
+      errors:
+        items:
+          $ref: '#/definitions/dto.Error'
+        type: array
       message:
-        example: Success
         type: string
       requestTime:
-        example: 2010-01-25T13:00:00
         type: string
       responseTime:
-        example: 2010-01-25T13:00:00
         type: string
       status:
-        example: OK
         type: string
     type: object
   dto.SavePublicData:
@@ -113,6 +110,25 @@ definitions:
     - publicDate
     - publicDescriptions
     - publicName
+    type: object
+  dto.SuccessResponseForSwaggerDocs:
+    properties:
+      code:
+        example: "000"
+        type: string
+      data: {}
+      message:
+        example: SUCCESS
+        type: string
+      requestTime:
+        example: 2010-01-25T13:00:00
+        type: string
+      responseTime:
+        example: 2010-01-25T13:00:00
+        type: string
+      status:
+        example: SUCCESS
+        type: string
     type: object
 externalDocs:
   description: OpenAPI
@@ -210,17 +226,15 @@ paths:
           description: Success Response On public data
           schema:
             allOf:
-            - $ref: '#/definitions/dto.RestResponse'
+            - $ref: '#/definitions/dto.SuccessResponseForSwaggerDocs'
             - properties:
                 data:
                   $ref: '#/definitions/dto.PublicData'
-                errors:
-                  $ref: '#/definitions/dto.Error'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrResponseForSwaggerDocsOnly'
+            $ref: '#/definitions/dto.ErrResponseForSwaggerDocs'
       summary: Get public data
       tags:
       - PublicData

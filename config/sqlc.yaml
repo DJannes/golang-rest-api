@@ -2,7 +2,7 @@ version: "2"
 sql:
   - engine: "postgresql"
     queries: "../schema/dbqueries/"
-    schema: "../schema/dbschema/"
+    schema: "../schema/migrations/"
     gen:
       go:
         sql_package: "pgx/v5"
@@ -15,8 +15,4 @@ sql:
             nullable: false
           - db_type: "pg_catalog.numeric"
             go_type: "github.com/shopspring/decimal.NullDecimal"
-            nullable: true # when numeric is null, use this custom type
-            # go_type:
-            #   import: "github.com/jackc/pgx-shopspring-decimal"
-            #   package: "pgxdecimal"
-            #   type: "NullDecimal"
+            nullable: true
