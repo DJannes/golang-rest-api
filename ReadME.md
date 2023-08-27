@@ -21,6 +21,7 @@ make run
   - [x] Token Authentication
 - [x] SQL Generator
 - [] Marketplace API
+- [] Deployment to cloud
 
 # Used Tools
 - https://github.com/swaggo/swag
