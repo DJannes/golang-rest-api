@@ -10,9 +10,6 @@ definitions:
         items:
           $ref: '#/definitions/dto.Error'
         type: array
-      message:
-        example: Request Body Is not Valid
-        type: string
       requestTime:
         example: 2010-01-25T13:00:00
         type: string
@@ -75,8 +72,6 @@ definitions:
         items:
           $ref: '#/definitions/dto.Error'
         type: array
-      message:
-        type: string
       requestTime:
         type: string
       responseTime:
@@ -117,9 +112,6 @@ definitions:
         example: "000"
         type: string
       data: {}
-      message:
-        example: SUCCESS
-        type: string
       requestTime:
         example: 2010-01-25T13:00:00
         type: string

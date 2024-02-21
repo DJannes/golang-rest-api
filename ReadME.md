@@ -20,6 +20,7 @@ make run
   - [x] Basic Authentication
   - [x] Token Authentication
 - [x] SQL Generator
+- [x] Https Server
 - [] Marketplace API
 - [] Deployment to cloud
 

@@ -243,10 +243,6 @@ const docTemplate = `{
                         "$ref": "#/definitions/dto.Error"
                     }
                 },
-                "message": {
-                    "type": "string",
-                    "example": "Request Body Is not Valid"
-                },
                 "requestTime": {
                     "type": "string",
                     "example": "2010-01-25T13:00:00"
@@ -334,9 +330,6 @@ const docTemplate = `{
                         "$ref": "#/definitions/dto.Error"
                     }
                 },
-                "message": {
-                    "type": "string"
-                },
                 "requestTime": {
                     "type": "string"
                 },
@@ -391,10 +384,6 @@ const docTemplate = `{
                     "example": "000"
                 },
                 "data": {},
-                "message": {
-                    "type": "string",
-                    "example": "SUCCESS"
-                },
                 "requestTime": {
                     "type": "string",
                     "example": "2010-01-25T13:00:00"
